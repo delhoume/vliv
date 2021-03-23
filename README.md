@@ -10,3 +10,5 @@ load-on-demand schemes.
 It works better on pre-computed pyramidal TIFFs.
 
 The three sample plugins show how to use API to implement dynamic loading (computation) of data
+
+![Screenshot](https://github.com/delhoume/vliv/blob/main/screenshot.jpg "Screenshot")
