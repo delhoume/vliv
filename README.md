@@ -10,5 +10,7 @@ load-on-demand schemes.
 It works better on pre-computed pyramidal TIFFs.
 
 The three sample plugins show how to use API to implement dynamic loading (computation) of data
+The installer for released version 2.5.2 contains all compiled plugins.
 
 ![Screenshot](https://github.com/delhoume/vliv/blob/main/screenshot.jpg "Screenshot")
+
