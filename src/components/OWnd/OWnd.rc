@@ -1,0 +1,135 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_ORIGIN_ALL          BITMAP  DISCARDABLE     "res\\2Dscroll origin.bmp"
+IDB_ORIGIN_HORIZONTAL   BITMAP  DISCARDABLE     "res\\Horizontal scroll origin.bmp"
+IDB_ORIGIN_VERTICAL     BITMAP  DISCARDABLE     "res\\Vertical scroll origin.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_EAST                CURSOR  DISCARDABLE     "res\\east.cur"
+IDC_NE                  CURSOR  DISCARDABLE     "res\\Ne.cur"
+IDC_NOMOVE              CURSOR  DISCARDABLE     "res\\nomove2d.cur"
+IDC_NOMOVE_HORIZONTAL   CURSOR  DISCARDABLE     "res\\nomoveh.cur"
+IDC_NOMOVE_VERTICAL     CURSOR  DISCARDABLE     "res\\nomovev.cur"
+IDC_NORTH               CURSOR  DISCARDABLE     "res\\north.cur"
+IDC_NW                  CURSOR  DISCARDABLE     "res\\Nw.cur"
+IDC_SE                  CURSOR  DISCARDABLE     "res\\Se.cur"
+IDC_SOUTH               CURSOR  DISCARDABLE     "res\\south.cur"
+IDC_SW                  CURSOR  DISCARDABLE     "res\\Sw.cur"
+IDC_WEST                CURSOR  DISCARDABLE     "res\\west.cur"
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x29L
+#else
+ FILEFLAGS 0x28L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "Comments", "Email comments and suggestions russf@gipsysoft.com\0"
+            VALUE "CompanyName", "GipsySoft\0"
+            VALUE "FileDescription", "Screen Magnification Utility\0"
+            VALUE "FileVersion", "1, 0, 0, 0\0"
+            VALUE "InternalName", "Origin Window\0"
+            VALUE "LegalCopyright", "Copyright © 1998 Russell Freeman\0"
+            VALUE "LegalTrademarks", "none.\0"
+            VALUE "OriginalFilename", "OWnd.DLL\0"
+            VALUE "PrivateBuild", "1\0"
+            VALUE "ProductName", "Origin Window - IE style origin window.\0"
+            VALUE "ProductVersion", "1, 0, 0, 0\0"
+            VALUE "SpecialBuild", "1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

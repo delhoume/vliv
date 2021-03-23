@@ -1,0 +1,170 @@
+#include <windows.h>
+#include "resource.h"
+
+APPLICATION ICON "Woof.ico"
+MYINFO ICON "myinfo2.ico"
+HAND1 CURSOR "hand2.cur"
+HAND2 CURSOR "hand.cur"
+IDLE ICON "bullet_green.ico"
+BUSY ICON "bullet_red.ico"
+
+IDB_TOOLBAR BITMAP "toolbar_new.bmp"
+IDB_TOOLBAR24 BITMAP "toolbar_new24.bmp"
+IDB_TOOLBAR24D BITMAP "toolbar_new24d.bmp"
+IDB_TOOLBAR24H BITMAP "toolbar_new24h.bmp"
+IDB_PAYPAL BITMAP "paypal.bmp"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "vliv.exe.manifest"
+
+ABOUTDLG DIALOGEX 0, 0, 186, 94
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,75,50,14
+    CTEXT           "Vliv 2.5.2 - January 2008",IDC_VERSION,6,14,180,8
+    CTEXT           "Unregistered Version",3,6,26,180,8
+    CTEXT           "(c) 2003-2008, Frédéric Delhoume",4,6,45,180,8
+    CTEXT           "http://vlivviewer.free.fr/vliv.htm",IDC_HYPERLINK,6,58,180,8
+END
+
+CREDITSDLG DIALOGEX 0, 0, 212, 230
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,78,212,50,14
+    GROUPBOX        "TIFF library 4beta",6,8,8,196,37
+    CTEXT           "Copyright (c) 1988-1997 Sam Leffler",7,9,20,193,8
+    CTEXT           "Copyright (c) 1991-1997 Silicon Graphics, Inc.",8,9,30,193,8
+    GROUPBOX        "ZLIB Library 1.2.3",9,8,50,196,30
+    CTEXT           "(c) 1995-2005 Jean-loup Gailly and Mark Adler",10,9,64,193,8
+    GROUPBOX        "IJG Library v6b",11,8,85,196,30
+    CTEXT           "(c) 1991-1998, Thomas G. Lane",12,9,98,193,8
+    GROUPBOX        "Ownd dll",13,8,120,196,30
+    CTEXT           "(c) 1998, Russell Freeman",14,9,132,193,8
+    GROUPBOX        "PNG Library 1.2.13", 15,8,153,196,51
+    CTEXT           "Copyright (c) 1998-2006 Glenn Randers-Pehrson",16, 9,166,193,8
+    CTEXT           "Copyright (c) 1996-1997 Andreas Dilger",17,9,178,193,8
+    CTEXT           "Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.",18,9,190,193,8
+END
+
+REGISTERDLG DIALOGEX 0, 0, 200, 90
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Register Vliv"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,90,70,48,14
+    PUSHBUTTON      "Cancel",IDCANCEL,142,70,48,14
+    CONTROL         IDB_PAYPAL, IDC_PAYPAL, "Static", SS_BITMAP | SS_NOTIFY | WS_BORDER, 10, 69, 70, 24
+    LTEXT           "&User name",IDC_STATIC,10,4,44,8
+    EDITTEXT        IDC_NAME,10,16,180,12,ES_AUTOHSCROLL,WS_EX_CLIENTEDGE
+    LTEXT           "&License key",IDC_STATIC2,10,35,50,8
+    EDITTEXT        IDC_KEY,10,47,180,12,ES_AUTOHSCROLL,WS_EX_CLIENTEDGE
+END
+
+STRINGTABLE
+BEGIN 
+    ID_FILE_OPEN, "Open..."
+    ID_FILE_PRINT, "Print..."
+    ID_IMAGE_PREV, "Previous Page"
+    ID_IMAGE_NEXT, "Next Page"
+    ID_IMAGE_FIRST, "First Page"
+    ID_IMAGE_LAST, "Last Page"
+    ID_HELP_ABOUT, "About..."
+    IDS_UNTITLED, "Very Large Image Viewer"
+    IDS_TITLED, "Very Large Image Viewer : %s"
+    IDS_REGISTERED_TO, "Registered to : %s"
+    IDS_SUCCESSFULLY_LOADED, "%s successfully loaded"
+    IDS_CANNOT_LOAD, "%s cannot be loaded"
+    IDS_CANNOT_LOADTILE, "Tile %dx%d cannot be loaded"
+    IDS_TILES_INFO "%dx%d tiles (%dx%d pixels)"
+    IDS_STRIPS_INFO "%d strip%s of %d pixel%s"
+    IDS_IMAGE_NOT_TILED "Image is not tiled"
+    IDS_SINGLE_IMAGE "Single Image"
+    IDS_PRINTING "Printing tile %d of %d (page %d of %d)"
+    IDS_RECENT_MENU "Recent Files"
+    IDS_PAGE "Page %d/%d (%s)"
+    IDS_FULL_RESOLUTION "Full Resolution"
+    IDS_REDUCED_RESOLUTION "Reduced Resolution"
+    IDS_SINGLE_PAGE "Single Page"
+    IDS_VIRTUAL_RESOLUTION "Virtual Resolution"
+    ID_TOOLS_CLIPBOARD "Copy View to Clipboard"
+    ID_TOOLS_FULLSCREEN "Fullscreen"
+    ID_TOOLS_EXPORTBMP "Export View to BMP File..."
+END
+
+VLIVACCEL ACCELERATORS 
+BEGIN
+    "^O", ID_FILE_OPEN, ASCII, NOINVERT
+    "^F", ID_IMAGE_FIRST, ASCII, NOINVERT
+    "^P", ID_IMAGE_PREV, ASCII, NOINVERT
+    "^N", ID_IMAGE_NEXT, ASCII, NOINVERT
+    "^L", ID_IMAGE_LAST, ASCII, NOINVERT
+    "^C", ID_TOOLS_CLIPBOARD, ASCII, NOINVERT
+    "A", ID_HELP_ABOUT, ASCII, NOINVERT
+END
+
+ABORTDLG DIALOGEX 0, 0, 188, 90 
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN 
+    CTEXT "Initializing...", IDD_PROGTEXT, 10,23,180,8 
+    DEFPUSHBUTTON "Cancel", IDD_CANCEL, 67,63,50,14
+END 
+
+VLIVMENU MENU
+BEGIN
+	POPUP "&File"	
+	BEGIN
+		MENUITEM "Open...\tCtrl+O",             ID_FILE_OPEN
+		MENUITEM SEPARATOR
+		MENUITEM "Print...",                    ID_FILE_PRINT, GRAYED	
+		MENUITEM SEPARATOR
+		POPUP "Recent Files"                    GRAYED
+		BEGIN
+			MENUITEM "Empty",               ID_FILE_RECENT
+		END
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit",                       ID_FILE_EXIT
+	END
+    POPUP "&Image"
+    BEGIN
+        MENUITEM "First Page\tCtrl+F",          ID_IMAGE_FIRST, GRAYED
+        MENUITEM "Previous Page\tCtrl+P",       ID_IMAGE_PREV, GRAYED
+        MENUITEM "Next Page\tCtrl+N",           ID_IMAGE_NEXT, GRAYED
+        MENUITEM "Last Page\tCtrl+L",           ID_IMAGE_LAST, GRAYED
+    END
+    POPUP "&Tools"
+    BEGIN
+	MENUITEM "Clear Recent File List"       ID_TOOLS_CLEAR
+	MENUITEM "Fullscreen\tEnter"            ID_TOOLS_FULLSCREEN
+        MENUITEM SEPARATOR
+	MENUITEM "Register..."                  ID_TOOLS_REGISTER
+        MENUITEM SEPARATOR
+	MENUITEM "Export Current View as BMP..." ID_TOOLS_EXPORTBMP, GRAYED
+	MENUITEM "Copy Current View to Clipboard\tCtrl+C" ID_TOOLS_CLIPBOARD, GRAYED
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "Credits...",                  ID_HELP_CREDITS
+        MENUITEM SEPARATOR
+        MENUITEM "About...",                    ID_HELP_ABOUT
+    END
+END
+
+1 VERSIONINFO 
+    FILEVERSION 2,5,2,0
+    PRODUCTVERSION 2,5,2,0
+    BEGIN 
+	BLOCK "StringFileInfo"
+    	BEGIN
+	    BLOCK "040904e4"
+            BEGIN
+		VALUE "CompanyName", "Frédéric Delhoume\0"
+            	VALUE "FileDescription", "Very Large Image Viewer\0"
+            	VALUE "FileVersion", "2.5.2\0"
+       		VALUE "LegalCopyright", "Copyright © Frédéric Delhoume 2003-2008\0"
+            	VALUE "ProductName", "Vliv\0"
+            	VALUE "ProductVersion", "2.5.2\0"
+            END
+      END
+END

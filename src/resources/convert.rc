@@ -1,0 +1,142 @@
+#include <windows.h>
+
+APPLICATION ICON "Woof.ICO"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "vliv.exe.manifest"
+
+CONVERT DIALOGEX 0, 0, 186, 94
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,75,50,14
+    CTEXT           "Vliv 1.6 - April 2004",2,6,14,180,8
+    CTEXT           "Unregistered Version",3,6,26,180,8
+    CTEXT           "(c) 2003-2004, Frédéric Delhoume",4,6,45,180,8
+    CTEXT           "http://delhoume.frederic.free.fr/vliv.htm",IDC_HYPERLINK,6,58,180,8
+END
+
+CREDITSDLG DIALOGEX 0, 0, 188,145
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,67,125,50,14
+    GROUPBOX        "TIFF library 3.6.0",6,14,8,160,37
+    CTEXT           " Copyright (c) 1988-1997 Sam Leffler",7,24,20,138,8
+    CTEXT           " Copyright (c) 1991-1997 Silicon Graphics, Inc.",8,18,30,148,8
+    GROUPBOX        "ZLIB Library 1.2.1",9,14,50,160,30
+    CTEXT           " (c) 1995-2003 Jean-loup Gailly and Mark Adler",10,16,64,154,8
+    GROUPBOX        "IJG JPEG library v6b",11,14,85,162,30
+    CTEXT           " (c) 1991-1998, Thomas G. Lane",12,16,98,154,8
+END
+
+REGISTERDLG DIALOGEX 0, 0, 200, 90
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Register Vliv"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,50,70,48,14
+    PUSHBUTTON      "Cancel",IDCANCEL,104,70,48,14
+    LTEXT           "&User name",IDC_STATIC,18,4,44,8
+    EDITTEXT        IDC_NAME,18,16,158,12,ES_AUTOHSCROLL,WS_EX_CLIENTEDGE
+    LTEXT           "&License key",IDC_STATIC2,18,35,50,8
+    EDITTEXT        IDC_KEY,18,47,158,12,ES_AUTOHSCROLL,WS_EX_CLIENTEDGE
+END
+
+STRINGTABLE
+BEGIN 
+    ID_FILE_OPEN, "Open..."
+    ID_FILE_PRINT, "Print..."
+    ID_IMAGE_PREV, "Previous Page"
+    ID_IMAGE_NEXT, "Next Page"
+    ID_HELP_ABOUT, "About..."
+    IDS_UNTITLED, "Very Large Image Viewer"
+    IDS_TITLED, "Very Large Image Viewer : %s"
+    IDS_REGISTERED_TO, "Registered to : %s"
+    IDS_SUCCESSFULLY_LOADED, "%s successfully loaded"
+    IDS_CANNOT_LOAD, "%s cannot be loaded"
+    IDS_TILES_INFO "%dx%d tiles (%dx%d pixels)"
+    IDS_STRIPS_INFO "%d strip%s of %d pixel%s"
+    IDS_IMAGE_NOT_TILED "Image is not tiled"
+    IDS_SINGLE_IMAGE "Single Image"
+    IDS_PRINTING "Printing tile %d of %d (page %d of %d)"
+    IDS_RECENT_MENU "Recent Files"
+    IDS_PAGE "Page %d/%d (%s)"
+    IDS_FULL_RESOLUTION "Full Resolution"
+    IDS_REDUCED_RESOLUTION "Reduced Resolution"
+    IDS_SINGLE_PAGE "Single Page"
+END
+
+VLIVACCEL ACCELERATORS 
+BEGIN
+    "^O", ID_FILE_OPEN, ASCII, NOINVERT
+    "^P", ID_IMAGE_PREV, ASCII, NOINVERT
+    "^N", ID_IMAGE_NEXT, ASCII, NOINVERT
+    "^C", ID_TOOLS_CLIPBOARD, ASCII, NOINVERT
+    "A", ID_HELP_ABOUT, ASCII, NOINVERT
+END
+
+ABORTDLG DIALOGEX 0, 0, 188, 90 
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN 
+    CTEXT "Initializing...", IDD_PROGTEXT, 10,23,180,8 
+    DEFPUSHBUTTON "Cancel", IDD_CANCEL, 67,63,50,14
+END 
+
+VLIVMENU MENU
+BEGIN
+	POPUP "&File"	
+	BEGIN
+		MENUITEM "Open...\tCtrl+O",             ID_FILE_OPEN
+		MENUITEM SEPARATOR
+		MENUITEM "Print...",                    ID_FILE_PRINT, GRAYED	
+		MENUITEM SEPARATOR
+		POPUP "Recent Files"                    GRAYED
+		BEGIN
+			MENUITEM "Empty",               ID_FILE_RECENT
+		END
+		MENUITEM SEPARATOR
+		MENUITEM "E&xit",                       ID_FILE_EXIT
+	END
+    POPUP "&Image"
+    BEGIN
+        MENUITEM "Previous Page\tCtrl+P",       ID_IMAGE_PREV, GRAYED
+        MENUITEM "Next Page\tCtrl+N",           ID_IMAGE_NEXT, GRAYED
+    END
+    POPUP "&Tools"
+    BEGIN
+	MENUITEM "Clear Recent File List"       ID_TOOLS_CLEAR
+        MENUITEM SEPARATOR
+	MENUITEM "Register..."                  ID_TOOLS_REGISTER
+        MENUITEM SEPARATOR
+	MENUITEM "Export Current View as BMP..." ID_TOOLS_EXPORTBMP, GRAYED
+	MENUITEM "Copy Current View to Clipboard\tCtrl+C" ID_TOOLS_CLIPBOARD, GRAYED
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "Credits...",                  ID_HELP_CREDITS
+        MENUITEM SEPARATOR
+        MENUITEM "About...",                    ID_HELP_ABOUT
+    END
+END
+
+1 VERSIONINFO 
+    FILEVERSION 1,0,0,1
+    PRODUCTVERSION 1,4,0,0
+    BEGIN 
+	BLOCK "StringFileInfo"
+    	BEGIN
+	    BLOCK "040904e4"
+            BEGIN
+		VALUE "CompanyName", "Frédéric Delhoume\0"
+            	VALUE "FileDescription", "Very Large Image Viewer\0"
+            	VALUE "FileVersion", "1.6\0"
+ 	        VALUE "InternalName", "vliv.exe\0"
+       		VALUE "LegalCopyright", "Copyright © Frédéric Delhoume 2003-2004\0"
+            	VALUE "LegalTrademarks", "Copyright © Frédéric Delhoume 2003-2004\0"
+            	VALUE "OriginalFilename", "vliv.exe\0"
+            	VALUE "ProductName", "Very Large Image Viewer\0"
+            	VALUE "ProductVersion", "1.6\0"
+            END
+      END
+END

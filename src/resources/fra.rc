@@ -1,0 +1,97 @@
+#define ID_FILE_EXIT 9001
+#define ID_FILE_OPEN 9002
+#define ID_FILE_PRINT 9003
+#define ID_HELP_CREDITS 9004
+#define ID_HELP_ABOUT 9005
+#define ID_IMAGE_PREV 9006
+#define ID_IMAGE_NEXT 9007
+#define ID_FILE_RECENT 9008
+#define IDD_PROGTEXT 9009
+#define IDD_CANCEL 9011
+#define ID_TOOLS_CLEAR 9020
+#define ID_TOOLS_REGISTER 9021
+
+#define IDS_UNTITLED 9200
+#define IDS_TITLED 9201
+#define IDS_REGISTERED_TO 9202
+#define IDS_SUCCESSFULLY_LOADED 9203
+#define IDS_CANNOT_LOAD 9204
+
+STRINGTABLE
+BEGIN 
+    ID_FILE_OPEN, "Ouvrir..."
+    ID_FILE_PRINT, "Imprimer..."
+    ID_IMAGE_PREV, "Page Precedente"
+    ID_IMAGE_NEXT, "Page Suivante"
+    ID_HELP_ABOUT, "A propos..."
+    IDS_UNTITLED, "Very Large Image Viewer"
+    IDS_TITLED, "Very Large Image Viewer : %s"
+    IDS_REGISTERED_TO, "Enregistre pour : %s"
+    IDS_SUCCESSFULLY_LOADED, "%s charge avec succes"
+    IDS_CANNOT_LOAD, "%s ne peut etre charge"
+END
+
+VLIVMENU MENU
+BEGIN
+	POPUP "&Fichier"	
+	BEGIN
+		MENUITEM "Ouvrir...\tCtrl+O",             ID_FILE_OPEN
+		MENUITEM SEPARATOR
+		MENUITEM "Imprimer...",                    ID_FILE_PRINT, GRAYED	
+		MENUITEM SEPARATOR
+		POPUP "Fichiers recents"                    GRAYED
+		BEGIN
+			MENUITEM "Vide",               ID_FILE_RECENT
+		END
+		MENUITEM SEPARATOR
+		MENUITEM "&Quitter",                       ID_FILE_EXIT
+	END
+    POPUP "&Image"
+    BEGIN
+        MENUITEM "Page Precedente\tCtrl+P",       ID_IMAGE_PREV, GRAYED
+        MENUITEM "Page Suivante\tCtrl+N",           ID_IMAGE_NEXT, GRAYED
+    END
+    POPUP "&Outils"
+    BEGIN
+	MENUITEM "Vider la liste des fichiers recents"       ID_TOOLS_CLEAR
+        MENUITEM SEPARATOR
+	MENUITEM "Enregistrement..."                  ID_TOOLS_REGISTER
+    END
+    POPUP "&Aide"
+    BEGIN
+        MENUITEM "Credits...",                  ID_HELP_CREDITS
+        MENUITEM SEPARATOR
+        MENUITEM "A propos...",                    ID_HELP_ABOUT
+    END
+END
+
+ABOUTDLG DIALOGEX 0, 0, 186, 94
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,68,67,50,14
+    CTEXT           "Vliv 1.5 - Janvier 2004",2,50,14,88,8
+    CTEXT           "Version non enregistree",3,13,39,130,8
+    CTEXT           "(c) 2004, Frédéric Delhoume",4,47,52,90,8
+END
+
+REGISTERDLG DIALOGEX 0, 0, 200, 90
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Register Vliv"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,50,70,48,14
+    PUSHBUTTON      "Annuler",IDCANCEL,104,70,48,14
+    LTEXT           "&Nom",IDC_STATIC,18,4,44,8
+    EDITTEXT        IDC_NAME,18,16,158,12,ES_AUTOHSCROLL,WS_EX_CLIENTEDGE
+    LTEXT           "&Licence",IDC_STATIC2,18,35,50,8
+    EDITTEXT        IDC_KEY,18,47,158,12,ES_AUTOHSCROLL,WS_EX_CLIENTEDGE
+END
+
+ABORTDLG DIALOGEX 0, 0, 188, 90 
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN 
+    CTEXT "Initialisation...", IDD_PROGTEXT, 10,23,180,8 
+    DEFPUSHBUTTON "Annuler", IDD_CANCEL, 67,63,50,14
+END 
