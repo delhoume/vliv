@@ -1,7 +1,7 @@
 # vliv
 The Very Large Image Viewer for Windows
 
-Contains the source code for the main program (win32) and two sample plugins.
+Contains the source code for the main program (win32) and three sample plugins.
 Plugins for more image types are available on request for a small fee (PNG, TIFF, JPEG, BMP, PPM, AVI, JPEG2000).
 
 This program uses tiling and multiple levels (called pyramids) to allow massive images (gigapixel) images
