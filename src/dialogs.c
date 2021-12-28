@@ -14,7 +14,7 @@ static HWND progress;
 
 BOOL StaticToURLControl(HWND hDlg, UINT staticid, TCHAR *szURL, COLORREF crLink);
 
-BOOL CALLBACK DialogProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+BOOL CALLBACK DialogProcAbout (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
      switch (message) {
      case WM_INITDIALOG :
 	 ShowWindow (hDlg, SW_HIDE);
@@ -27,6 +27,48 @@ BOOL CALLBACK DialogProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	     SendDlgItemMessage(hDlg, 3, WM_SETTEXT, 0, (LPARAM)buffer);
 	 }
 	 // does not center in window, but in screen
+	 CenterDialog (hDlg, GetWindow(hDlg, GW_OWNER));
+	 ShowWindow (hDlg, SW_SHOW);
+	 return TRUE ;
+     case WM_COMMAND :
+	 switch (LOWORD (wParam)) {
+	 case IDOK :
+	 case IDCANCEL :
+	     EndDialog (hDlg, 0) ;
+	     return TRUE ;
+	 }
+	 break ;
+     }
+     return FALSE ;
+}
+
+const char* credits = 
+"libtiff 4.3.0\n"
+"   Copyright (c) 1988-1997 Sam Leffler\n"
+"   Copyright (c) 1991-1997 Silicon Graphics, Inc.\n\n"
+"libpng 1.6.37\n"
+"   Copyright (c) 1995-2019 The PNG Reference Library Authors.\n"
+"   Copyright (c) 2018-2019 Cosmin Truta.\n"
+"   Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson.\n"
+"   Copyright (c) 1996-1997 Andreas Dilger.\n"
+"   Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.\n\n"
+"zlib 1.2.11\n"
+"   Copyright (c)  1995-2017 Jean-loup Gailly and Mark Adler\n\n"
+"libjpeg 6b\n"
+"   Copyright (c) 1994-1998, Thomas G. Lane.\n\n"
+"libjpeg-turbo 2.1.2\n"
+"   Copyright (c)2009-2021 D. R. Commander.\n"
+"   Copyright (c)2015 Viktor Szathmáry.\n\n"
+"Ownd\n"
+"   Copyright (c) 1998 Russell Freeman."
+;
+
+
+BOOL CALLBACK DialogProcCredits (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+     switch (message) {
+     case WM_INITDIALOG :
+	 ShowWindow (hDlg, SW_HIDE);
+	 SendDlgItemMessage(hDlg, IDC_STATIC, WM_SETTEXT, 0, (LPARAM)credits);
 	 CenterDialog (hDlg, GetWindow(hDlg, GW_OWNER));
 	 ShowWindow (hDlg, SW_SHOW);
 	 return TRUE ;

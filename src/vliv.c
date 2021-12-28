@@ -730,10 +730,10 @@ LRESULT CALLBACK TopWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	    UpdateScrollbars(TRUE);
 	    break;
 	case ID_HELP_ABOUT:
-	    DialogBox(languageInst, "AboutDlg", mainwindow, DialogProc);
+	    DialogBox(languageInst, "AboutDlg", mainwindow, DialogProcAbout);
 	    break;
 	case ID_HELP_CREDITS:
-	    DialogBox(hInst, "CreditsDlg", mainwindow, DialogProc);
+	    DialogBox(hInst, "CreditsDlg", mainwindow, DialogProcCredits);
 	    break;
 	}
 	if ((LOWORD(wParam) >= ID_FILE_RECENT) && (LOWORD(wParam) < (ID_FILE_RECENT + GetNumRecent()))) 
