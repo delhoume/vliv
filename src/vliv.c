@@ -215,7 +215,8 @@ LoadTiles(HDC hdcbitmap) {
 static void FreeImage() {
     FreeTileManager();
     if (image.handler && image.handler->internal && image.handler->close)
-	image.handler->close(&image);
+		image.handler->close(&image);
+		image.handler = 0;
 }
 
 static void ClearImage() {
@@ -901,7 +902,7 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	hDC = BeginPaint(hwnd, &ps);
 	GetClientRect(hwnd, &rect);
 	if (image.handler == 0) {
-	    FillRect(hDC, &rect, (HBRUSH)GetStockObject(BLACK_BRUSH));
+	    FillRect(hDC, &rect, (HBRUSH)GetStockObject(WHITE_BRUSH));
 	    EndPaint(hwnd, &ps);
 	    return 0;
 	}
@@ -918,8 +919,13 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
 	currenty = 0;
 	// create a list of tiles to load
-	miny = invalidrect.top / image.theight;
-	maxy = invalidrect.bottom / image.theight + 1;
+	if (image.theight != 0) {
+		miny = invalidrect.top / image.theight;
+		maxy = invalidrect.bottom / image.theight + 1;
+	} else {
+		miny = invalidrect.top; 
+		maxy = image.numtilesy;
+	}
 	if (maxy >= image.numtilesy)
 	    maxy = image.numtilesy;
 

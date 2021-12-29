@@ -2,21 +2,7 @@ CC  = cl
 RC  = rc
 LD  = link
 
-
-#TIFF = tiff-v3.6.0\libtiff
-TIFF = tiff-3.8.2\libtiff
-#TIFF = tiff-4b\libtiff	
-TIFFFLAGS = -I$(TIFF)
-
-ZLIB = zlib123
-ZLIBFLAGS = -I$(ZLIB)
-
-#JPEG = jpeg-6b
-JPEG = jpeg-6bx
-JPEGFLAGS = -I$(JPEG)
-
-PNG = lpng1213
-PNGFLAGS = -I$(PNG)
+VLIVDEBUG=1
 
 !ifdef VLIVDEBUG
 DEBUG=/Od /Zi

@@ -38,7 +38,7 @@ HBITMAP VlivCreateTrueColorDIBSection(HDC hdc, int width, int height,
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biBitCount = format;
     bmi.bmiHeader.biCompression = BI_RGB;
-    bmi.bmiHeader.biSizeImage = width * height * 3;
+    bmi.bmiHeader.biSizeImage = 0;
     hbitmap = CreateDIBSection(hdc, 
 			       (const BITMAPINFO*)&bmi, 
 			       DIB_RGB_COLORS, 
@@ -46,7 +46,7 @@ HBITMAP VlivCreateTrueColorDIBSection(HDC hdc, int width, int height,
 			       0, 
 			       0);
     if (hbitmap == 0) {
-	ShowLastError(TEXT("VlivCreateTrueColorDIBSection"));
+	    ShowLastError(TEXT("VlivCreateTrueColorDIBSection"));
     }
     return hbitmap;
 }
