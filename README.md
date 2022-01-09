@@ -16,5 +16,9 @@ The three sample plugins show how to use API to implement dynamic loading (or co
 
 The installer for released version contains all compiled plugins.
 
-![Screenshot](https://github.com/delhoume/vliv/blob/main/screenshot.jpg "Screenshot")
+Vliv has been able to display interactively (zoom-unzoom pan) a 717 gigapixel image, that's 925696 x 775168 pixels. on a very modest PC.
+The pyramidal tiled TIFF is 120 Gigabytes and has 11 pre-computed zoom levels.
+The image has been created from Rembrand's "The Night Watch" using custom tools.
 
+![vliv1](https://user-images.githubusercontent.com/1763447/148680797-38c5780c-fcdb-4616-9e2d-a7f16647a9f8.png)
+![vliv2](https://user-images.githubusercontent.com/1763447/148680800-cb7c4339-ee4a-4870-8977-e841e285063e.png)
