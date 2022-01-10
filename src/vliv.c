@@ -1319,8 +1319,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     InitOpenFileName(mainwindow);
     InitSaveFileName(mainwindow);
     
-    if (filename[0] != 0) 
-	OpenImage(filename);
+    if (filename[0] != 0) {
+		if (PathFileExists(filename))
+			OpenImage(filename);
+	}
     while(GetMessage(&msg, 0, 0, 0)) {
       if (!TranslateAccelerator(mainwindow, hAccel, &msg)) {
 	TranslateMessage(&msg);
