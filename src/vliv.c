@@ -317,35 +317,39 @@ static void LoadTile(HDC hdc, unsigned int x, unsigned int y) {
 
 static void
 OpenImage(const TCHAR* name) {
-    FormatHandlerPtr handler = GetHandlerFromFile(name);
-    if (handler) {
-	ClearImage();
-	image.handler = handler;
-	image.supportmt = 0;
-	//	strcpy(image.name, name);
-	StringCchCopy(image.name, MAX_PATH, name);
-	if (image.handler->open(&image, name)) {
-	    TCHAR buffer[MAX_PATH];
-	    TCHAR fname[MAX_PATH];
-	    LoadString(languageInst, IDS_SUCCESSFULLY_LOADED, sz, sizeof(sz));
-	    //	    wsprintf(statustext, sz, name);
-	    StringCchPrintf(statustext, MAX_PATH, sz, name);
-	    GetFileTitle(name, fname, MAX_PATH - 1);
-	    LoadString(languageInst, IDS_TITLED, sz, sizeof(sz));
-	    //	    wsprintf(buffer, sz, fname);
-	    StringCchPrintf(buffer, MAX_PATH, sz, fname);
-	    SetWindowText(mainwindow, buffer);
-	    SetDirectory(image.currentdir);
-	    UpdateScrollbars(FALSE);
-	    UpdateRecentList(name);
-	} else {
-	    LoadString(languageInst, IDS_CANNOT_LOAD, sz, sizeof(sz));
-	    //	    wsprintf(statustext, sz, name);
-	    StringCchPrintf(statustext, MAX_PATH, sz, name);
+	if (!PathFileExists(name))
+		return;
+	else {
+		FormatHandlerPtr handler = GetHandlerFromFile(name);
+		if (handler) {
+			ClearImage();
+			image.handler = handler;
+			image.supportmt = 0;
+			//	strcpy(image.name, name);
+			StringCchCopy(image.name, MAX_PATH, name);
+			if (image.handler->open(&image, name)) {
+				TCHAR buffer[MAX_PATH];
+				TCHAR fname[MAX_PATH];
+				LoadString(languageInst, IDS_SUCCESSFULLY_LOADED, sz, sizeof(sz));
+				//	    wsprintf(statustext, sz, name);
+				StringCchPrintf(statustext, MAX_PATH, sz, name);
+				GetFileTitle(name, fname, MAX_PATH - 1);
+				LoadString(languageInst, IDS_TITLED, sz, sizeof(sz));
+				//	    wsprintf(buffer, sz, fname);
+				StringCchPrintf(buffer, MAX_PATH, sz, fname);
+				SetWindowText(mainwindow, buffer);
+				SetDirectory(image.currentdir);
+				UpdateScrollbars(FALSE);
+				UpdateRecentList(name);
+			} else {
+				LoadString(languageInst, IDS_CANNOT_LOAD, sz, sizeof(sz));
+				//	    wsprintf(statustext, sz, name);
+				StringCchPrintf(statustext, MAX_PATH, sz, name);
+			}
+			UpdateRecentMenu(mainwindow);
+			UpdateStatusBar();
+		}
 	}
-	UpdateRecentMenu(mainwindow);
-	UpdateStatusBar();
-    }
 }
 
 static BOOL HandleMouseWheel(short zDelta) {
@@ -1259,7 +1263,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     WININFO wi;
     TCHAR filename[MAX_PATH];
     hInst = hInstance;
-    //   MessageBox(0, "ok", "ok", MB_OK);
     InitCommonControls();
     InitLanguage(hInstance);
     InitImage();
@@ -1320,8 +1323,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     InitSaveFileName(mainwindow);
     
     if (filename[0] != 0) {
-		if (PathFileExists(filename))
-			OpenImage(filename);
+		OpenImage(filename);
 	}
     while(GetMessage(&msg, 0, 0, 0)) {
       if (!TranslateAccelerator(mainwindow, hAccel, &msg)) {
