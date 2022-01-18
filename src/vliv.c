@@ -4,6 +4,7 @@
 #include <vliv.h>
 
 #include <windowsx.h>
+#include <joystickapi.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commctrl.h>
@@ -116,6 +117,24 @@ AddTileInfo(int x, int y, int sx, int sy, int sw, int sh, int dx, int dy) {
 }
 
 void LoadTile(HDC hdc, unsigned int x, unsigned int y);
+
+static BOOL InitJoystick(HWND hWnd) {
+	if (joyGetNumDevs()) {
+		DWORD result = joySetCapture(hWnd, JOYSTICKID1, 0, FALSE);
+		switch (result) {
+		case JOYERR_UNPLUGGED:								// The joystick is unplugged
+			return FALSE;									
+		case MMSYSERR_NODRIVER:								// There is no driver for a joystick
+			return FALSE;								
+		case JOYERR_NOCANDO:								// Unknown error
+			return FALSE;									
+		}
+	} else {
+		//MessageBox(NULL, "There are no joystick devices installed.", "Error", MB_OK | MB_ICONEXCLAMATION);
+	}
+	return TRUE;
+}
+
 
 static DWORD procnum = 1;
 typedef WINUSERAPI BOOL (WINAPI * QUEUEUSERWORKITEMF)(LPTHREAD_START_ROUTINE, LPVOID, ULONG);
@@ -256,12 +275,18 @@ static void FreeFileTypeNames() {
 static void UpdateStatusBar() {
     if (image.handler) {
 	TCHAR buffer[MAX_PATH];
-	//	wsprintf(buffer, "%dx%d pixels", image.width, image.height);
-	StringCchPrintf(buffer, MAX_PATH, "%dx%d pixels", image.width, image.height);
+	unsigned __int64 gigapixels = UInt32x32To64(image.width, image.height);
+	double gp = gigapixels / (double)1000000000;
+	if (gigapixels >= 1000000000) {
+		LoadString(languageInst, IDS_IMAGE_WIDTH_GIGA, sz, sizeof(sz));
+		StringCchPrintf(buffer, MAX_PATH, sz, image.width, image.height, gp);
+	} else {
+		LoadString(languageInst, IDS_IMAGE_WIDTH, sz, sizeof(sz));
+		StringCchPrintf(buffer, MAX_PATH, sz, image.width, image.height);
+	}
 	SendMessage(status, SB_SETTEXT, (WPARAM)0, (LPARAM)buffer);
 	if (image.istiled) {
 	    LoadString(languageInst, IDS_TILES_INFO, sz, sizeof(sz));
-	    //	    wsprintf(buffer, sz, image.numtilesx, image.numtilesy, image.twidth, image.theight);
 	    StringCchPrintf(buffer, MAX_PATH, sz, image.numtilesx, image.numtilesy, image.twidth, image.theight);
 	    SendMessage(status, SB_SETICON, (WPARAM)(int)4, (LPARAM)0);
 	    SendMessage(status, SB_SETTIPTEXT, (WPARAM)(int)4, (LPARAM)0);
@@ -354,18 +379,18 @@ OpenImage(const TCHAR* name) {
 
 static BOOL HandleMouseWheel(short zDelta) {
     if (image.handler != 0) {
-	if (image.numdirs > 1) {
-	    if (zDelta >= 0) {
-		if (image.currentdir != 0) {
-		    SetDirectory(image.currentdir - 1);
+		if (image.numdirs > 1) {
+			if (zDelta >= 0) {
+				if (image.currentdir != 0) {
+					SetDirectory(image.currentdir - 1);
+				}
+			} else {
+				if (image.currentdir != (image.numdirs - 1)) {
+					SetDirectory(image.currentdir + 1);
+				}		
+			}
+			UpdateScrollbars(TRUE);
 		}
-	    } else {
-		if (image.currentdir != (image.numdirs - 1)) {
-		    SetDirectory(image.currentdir + 1);
-		}		
-	    }
-	    UpdateScrollbars(TRUE);
-	}
     }
     return TRUE;
 }
@@ -419,7 +444,7 @@ static void UpdateScrollbars(BOOL center) {
     InvalidateRect(vlivview, 0, TRUE);
 }
 
-static int parts[] = { 140, 300, 480, 505, 530, -1 };
+static int parts[] = { 250, 440, 640, 665, 690, -1 };
 static HIMAGELIST imagelist;
 static HIMAGELIST imagelistd;
 static HIMAGELIST imagelisth;
@@ -855,6 +880,7 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	uOriginWindowUpdateMessage = RegisterWindowMessage("gs_OriginWindowUpdate");
 	uOriginWindowEndMessage = RegisterWindowMessage("gs_OriginWindowEnd");
 	InitRawInputDevice(hwnd);
+	InitJoystick(hwnd);
 	hdcbitmap = CreateCompatibleDC(0);
 	return 0;
 	break;
@@ -1143,18 +1169,34 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	    return 0;
 	break;
     case WM_MOUSEMOVE:
-	if (image.handler) {
-	    if ((started == TRUE) && (wParam && MK_LBUTTON)) {
-		int newmousex = GET_X_LPARAM(lParam); 
-		int newmousey = GET_Y_LPARAM(lParam);
-		int dx = newmousex - mousex;
-		int dy = newmousey - mousey;
-		ScrollWithOffset(hwnd, dx, dy);
-		mousex = newmousex;
-		mousey = newmousey;
-	    }
+		if (image.handler) {
+			if ((started == TRUE) && (wParam && MK_LBUTTON)) {
+			int newmousex = GET_X_LPARAM(lParam); 
+			int newmousey = GET_Y_LPARAM(lParam);
+			int dx = newmousex - mousex;
+			int dy = newmousey - mousey;
+			ScrollWithOffset(hwnd, dx, dy);
+			mousex = newmousex;
+			mousey = newmousey;
+			}
+		}
+		return 0;
+	break;
+	case MM_JOY1BUTTONDOWN:
+		if (wParam & JOY_BUTTON1)
+			SetDirectory(image.currentdir - 1);
+		if (wParam & JOY_BUTTON2)
+			SetDirectory(image.currentdir + 1);
+	    UpdateScrollbars(TRUE);
+	break;
+	case MM_JOY1MOVE: {
+		int x = 0, y = 0;
+		x = LOWORD(lParam) >> 12;
+		y = HIWORD(lParam) >> 12;
+		// add some factor here ?
+		ScrollWithOffset(hwnd, x, y);
+		return 0;
 	}
-	return 0;
 	break;
     case WM_KEYDOWN:
 	switch(wParam) {
@@ -1217,16 +1259,16 @@ static void ScrollWithOffset(HWND hwnd, int dx, int dy) {
 static void 
 InitLanguage(HINSTANCE hInstance) {
     LCID lcid = GetUserDefaultLCID();
+//	LCID lcid = MAKELCID(MAKELANGID(LANG_FRENCH, SUBLANG_FRENCH), SORT_DEFAULT);
     TCHAR lpszLang[4];
     TCHAR buffer[20];
     GetLocaleInfo(lcid, LOCALE_SABBREVLANGNAME, lpszLang, 4);
-    //    wsprintf(buffer, TEXT("%s.dll"), lpszLang);
     StringCchPrintf(buffer, 20, TEXT("%s.dll"), lpszLang);
-    languageInst = LoadLibrary(buffer);
-    if (languageInst)
-	SetThreadLocale(lcid);
-    else {
-	languageInst = hInstance;
+     languageInst = LoadLibrary(buffer);
+     if (languageInst) {
+		SetThreadLocale(lcid);
+	 } else {
+		languageInst = hInstance;
     }
     InitFileTypeNames();
 }

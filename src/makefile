@@ -18,7 +18,7 @@ CFLAGS = /nologo /W3 $(DEBUG) /D_CRT_SECURE_NO_DEPRECATE /DWIN32 /DWINDOWS /I.
 LDFLAGS = $(LDDEBUG) /SUBSYSTEM:WINDOWS /nodefaultlib:libc /VERSION:$(VERSION)
 
 SYSLIBS = wininet.lib user32.lib gdi32.lib kernel32.lib comctl32.lib comdlg32.lib shlwapi.lib \
-	  shell32.lib advapi32.lib version.lib strsafe.lib msimg32.lib
+	  shell32.lib advapi32.lib version.lib strsafe.lib msimg32.lib winmm.lib
 
 OBJECTS = vliv.obj urlctrl.obj dialogs.obj handlers.obj bitmap.obj recent.obj window.obj tilemgr.obj rawinput.obj
 

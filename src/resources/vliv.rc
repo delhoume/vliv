@@ -77,6 +77,8 @@ BEGIN
     ID_TOOLS_CLIPBOARD "Copy View to Clipboard"
     ID_TOOLS_FULLSCREEN "Fullscreen"
     ID_TOOLS_EXPORTBMP "Export View to BMP File..."
+	IDS_IMAGE_WIDTH "%dx%d pixels"
+	IDS_IMAGE_WIDTH_GIGA "%dx%d pixels (%.1f gigapixels)"
 END
 
 VLIVACCEL ACCELERATORS 

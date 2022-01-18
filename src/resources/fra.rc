@@ -1,34 +1,35 @@
-#define ID_FILE_EXIT 9001
-#define ID_FILE_OPEN 9002
-#define ID_FILE_PRINT 9003
-#define ID_HELP_CREDITS 9004
-#define ID_HELP_ABOUT 9005
-#define ID_IMAGE_PREV 9006
-#define ID_IMAGE_NEXT 9007
-#define ID_FILE_RECENT 9008
-#define IDD_PROGTEXT 9009
-#define IDD_CANCEL 9011
-#define ID_TOOLS_CLEAR 9020
-#define ID_TOOLS_REGISTER 9021
-
-#define IDS_UNTITLED 9200
-#define IDS_TITLED 9201
-#define IDS_REGISTERED_TO 9202
-#define IDS_SUCCESSFULLY_LOADED 9203
-#define IDS_CANNOT_LOAD 9204
+#include <windows.h>
+#include "resource.h"
 
 STRINGTABLE
 BEGIN 
     ID_FILE_OPEN, "Ouvrir..."
     ID_FILE_PRINT, "Imprimer..."
-    ID_IMAGE_PREV, "Page Precedente"
+    ID_IMAGE_PREV, "Page Précédente"
     ID_IMAGE_NEXT, "Page Suivante"
     ID_HELP_ABOUT, "A propos..."
     IDS_UNTITLED, "Very Large Image Viewer"
     IDS_TITLED, "Very Large Image Viewer : %s"
-    IDS_REGISTERED_TO, "Enregistre pour : %s"
-    IDS_SUCCESSFULLY_LOADED, "%s charge avec succes"
-    IDS_CANNOT_LOAD, "%s ne peut etre charge"
+    IDS_REGISTERED_TO, "Enregistré pour : %s"
+    IDS_SUCCESSFULLY_LOADED, "%s chargé avec succès"
+    IDS_CANNOT_LOAD, "%s ne peut etre chargé"
+    IDS_CANNOT_LOADTILE, "La tuile %dx%d ne peut etre chargée"
+    IDS_TILES_INFO "%dx%d tuiles (%dx%d pixels)"
+    IDS_STRIPS_INFO "%d bande%s de %d pixel%s"
+    IDS_IMAGE_NOT_TILED "L'image n'est pas tuilée"
+    IDS_SINGLE_IMAGE "Image simple"
+    IDS_PRINTING "Impression de la tuile %d sur %d (page %d sur %d)"
+    IDS_RECENT_MENU "Fichiers récents"
+    IDS_PAGE "Page %d/%d (%s)"
+    IDS_FULL_RESOLUTION "Pleine Résolution"
+    IDS_REDUCED_RESOLUTION "Résolution Réduite"
+    IDS_SINGLE_PAGE "Page simple"
+    IDS_VIRTUAL_RESOLUTION "Résolution Virtuelle"
+    ID_TOOLS_CLIPBOARD "Copier la vue dans le Clipboard"
+    ID_TOOLS_FULLSCREEN "Plein Ecran"
+    ID_TOOLS_EXPORTBMP "Exporter la vue vers un fichier BMP..."
+	IDS_IMAGE_WIDTH "%dx%d pixels"
+	IDS_IMAGE_WIDTH_GIGA "%dx%d pixels (%.1f gigapixels)"
 END
 
 VLIVMENU MENU
@@ -39,7 +40,7 @@ BEGIN
 		MENUITEM SEPARATOR
 		MENUITEM "Imprimer...",                    ID_FILE_PRINT, GRAYED	
 		MENUITEM SEPARATOR
-		POPUP "Fichiers recents"                    GRAYED
+		POPUP "Fichiers récents"                    GRAYED
 		BEGIN
 			MENUITEM "Vide",               ID_FILE_RECENT
 		END
@@ -48,18 +49,24 @@ BEGIN
 	END
     POPUP "&Image"
     BEGIN
-        MENUITEM "Page Precedente\tCtrl+P",       ID_IMAGE_PREV, GRAYED
+ 		MENUITEM "Première Page\tCtrl+F",          ID_IMAGE_FIRST, GRAYED
+        MENUITEM "Page Précédente\tCtrl+P",       ID_IMAGE_PREV, GRAYED
         MENUITEM "Page Suivante\tCtrl+N",           ID_IMAGE_NEXT, GRAYED
+        MENUITEM "Dernière Page\tCtrl+L",           ID_IMAGE_LAST, GRAYED
     END
     POPUP "&Outils"
     BEGIN
-	MENUITEM "Vider la liste des fichiers recents"       ID_TOOLS_CLEAR
+	MENUITEM "Vider la liste des fichiers récents"       ID_TOOLS_CLEAR
+	MENUITEM "Plein écran\tEnter"            ID_TOOLS_FULLSCREEN
         MENUITEM SEPARATOR
-	MENUITEM "Enregistrement..."                  ID_TOOLS_REGISTER
+	MENUITEM "Enregistrer..."                  ID_TOOLS_REGISTER
+        MENUITEM SEPARATOR
+	MENUITEM "Exporter la vue vers un fichier BMP..." ID_TOOLS_EXPORTBMP, GRAYED
+	MENUITEM "Copier la vue dans le Clipboard\tCtrl+C" ID_TOOLS_CLIPBOARD, GRAYED
     END
-    POPUP "&Aide"
+     POPUP "&Aide"
     BEGIN
-        MENUITEM "Credits...",                  ID_HELP_CREDITS
+        MENUITEM "Crédits...",                  ID_HELP_CREDITS
         MENUITEM SEPARATOR
         MENUITEM "A propos...",                    ID_HELP_ABOUT
     END
@@ -67,17 +74,25 @@ END
 
 ABOUTDLG DIALOGEX 0, 0, 186, 94
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Shell Dlg"
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,68,67,50,14
-    CTEXT           "Vliv 1.5 - Janvier 2004",2,50,14,88,8
-    CTEXT           "Version non enregistree",3,13,39,130,8
-    CTEXT           "(c) 2004, Frédéric Delhoume",4,47,52,90,8
+    DEFPUSHBUTTON   "OK",IDOK,68,75,50,14
+    CTEXT           "Vliv 2.5.3",IDC_VERSION,6,14,180,8
+    CTEXT           "(c) 2003-2022, Frédéric Delhoume",4,6,45,180,8
+    CTEXT           "http://vlivviewer.free.fr/vliv.htm",IDC_HYPERLINK,6,58,180,8
+END
+
+CREDITSDLG DIALOGEX 0, 0, 240, 254
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,92,236,50,14
+    LTEXT     	    "", IDC_STATIC, 10, 10, 220, 226
 END
 
 REGISTERDLG DIALOGEX 0, 0, 200, 90
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Register Vliv"
+CAPTION "Enregistrer Vliv"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,50,70,48,14
