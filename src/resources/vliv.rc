@@ -21,7 +21,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
 FONT 8, "MS Shell Dlg"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,68,75,50,14
-    CTEXT           "Vliv 2.5.3",IDC_VERSION,6,14,180,8
+    CTEXT           "Vliv 2.5.4",IDC_VERSION,6,14,180,8
     CTEXT           "(c) 2003-2022, Frédéric Delhoume",4,6,45,180,8
     CTEXT           "http://vlivviewer.free.fr/vliv.htm",IDC_HYPERLINK,6,58,180,8
 END
@@ -141,8 +141,8 @@ BEGIN
 END
 
 1 VERSIONINFO 
-    FILEVERSION 2,5,3,0
-    PRODUCTVERSION 2,5,3,0
+    FILEVERSION 2,5,4,0
+    PRODUCTVERSION 2,5,4,0
     BEGIN 
 	BLOCK "StringFileInfo"
     	BEGIN
@@ -150,10 +150,10 @@ END
             BEGIN
 		VALUE "CompanyName", "Frédéric Delhoume\0"
             	VALUE "FileDescription", "Very Large Image Viewer\0"
-            	VALUE "FileVersion", "2.5.3\0"
+            	VALUE "FileVersion", "2.5.4\0"
        		VALUE "LegalCopyright", "Copyright © Frédéric Delhoume 2003-2022\0"
             	VALUE "ProductName", "Vliv\0"
-            	VALUE "ProductVersion", "2.5.3\0"
+            	VALUE "ProductVersion", "2.5.4\0"
             END
       END
 END
