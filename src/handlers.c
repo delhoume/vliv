@@ -116,7 +116,7 @@ void RegisterFormatHandlers(ImagePtr img) {
 	strcat(tempfilter, handler->getextension());
     }
     strcat(customfilter, tempfilter);
-    len = strlen(customfilter);
+    len = (unsigned int)strlen(customfilter);
     for (idx = 0; idx < len; ++idx) {
 	if (customfilter[idx] == '|')
 	    customfilter[idx] = 0;

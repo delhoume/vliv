@@ -14,12 +14,12 @@ static HWND progress;
 
 BOOL StaticToURLControl(HWND hDlg, UINT staticid, TCHAR *szURL, COLORREF crLink);
 
-BOOL CALLBACK DialogProcAbout (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR DialogProcAbout (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
      switch (message) {
      case WM_INITDIALOG :
 	 ShowWindow (hDlg, SW_HIDE);
-	 if (GetDlgItem(hDlg, IDC_HYPERLINK)) 
-	     StaticToURLControl(hDlg, IDC_HYPERLINK, "http://vlivviewer.free.fr/vliv.htm", -1);
+	if (GetDlgItem(hDlg, IDC_HYPERLINK)) 
+	    StaticToURLControl(hDlg, IDC_HYPERLINK, "http://vlivviewer.free.fr/vliv.htm", -1);
 	 if (isRegistered == TRUE && GetDlgItem(hDlg, 3)) {
 	     char buffer[100];
 	     LoadString(languageInst, IDS_REGISTERED_TO, sz, sizeof(sz));
@@ -64,7 +64,7 @@ const char* credits =
 ;
 
 
-BOOL CALLBACK DialogProcCredits (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR DialogProcCredits (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
      switch (message) {
      case WM_INITDIALOG :
 	 ShowWindow (hDlg, SW_HIDE);
@@ -130,7 +130,7 @@ BOOL checkLicense() {
 
 const char* paypalurl = "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=delhoume%40yahoo%2ecom&item_name=Vliv%20Individual%20License&amount=10%2e00&no_shipping=2&no_note=1&currency_code=USD&lc=FR&bn=PP%2dBuyNowBF&charset=UTF%2d8";
 
-BOOL CALLBACK RegisterProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR RegisterProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
      switch (message) {
      case WM_INITDIALOG :
           ShowWindow (hDlg, SW_HIDE);
@@ -143,12 +143,12 @@ BOOL CALLBACK RegisterProc (HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 	    int n;
 	    char* dname = 0;
 	    char* dkey = 0;
-	    n = SendDlgItemMessage(hDlg, IDC_NAME, WM_GETTEXTLENGTH, 0, 0);
+	    n = (int)SendDlgItemMessage(hDlg, IDC_NAME, WM_GETTEXTLENGTH, 0, 0);
 	    if (n > 0) {
 	      dname = (char*)MYALLOC(n + 1);
 	      SendDlgItemMessage(hDlg, IDC_NAME, WM_GETTEXT, n+1, (LPARAM)dname);
 	    }
-	    n = SendDlgItemMessage(hDlg, IDC_KEY, WM_GETTEXTLENGTH, 0, 0);
+	    n = (int)SendDlgItemMessage(hDlg, IDC_KEY, WM_GETTEXTLENGTH, 0, 0);
 	    if (n > 0) {
 	      dkey = (char*)MYALLOC(n + 1);
 	      SendDlgItemMessage(hDlg, IDC_KEY, WM_GETTEXT, n+1, (LPARAM)dkey);
@@ -221,7 +221,7 @@ BOOL CenterDialog (HWND hwndChild, HWND hwndParent) {
    return SetWindowPos (hwndChild, 0, xNew, yNew, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
-BOOL CALLBACK AbortDialogProc(HWND hdlg, UINT message, WPARAM wParam, LPARAM lParam) { 
+INT_PTR AbortDialogProc(HWND hdlg, UINT message, WPARAM wParam, LPARAM lParam) { 
     switch (message) { 
     case WM_INITDIALOG: 
 

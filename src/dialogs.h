@@ -3,10 +3,10 @@
 
 #include <vliv.h>
 
-BOOL CALLBACK DialogProcAbout (HWND, UINT, WPARAM, LPARAM);
-BOOL CALLBACK DialogProcCredits (HWND, UINT, WPARAM, LPARAM);
-BOOL CALLBACK RegisterProc (HWND, UINT, WPARAM, LPARAM);
-BOOL CALLBACK AbortDialogProc(HWND hdlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR DialogProcAbout(HWND, UINT, WPARAM, LPARAM);
+INT_PTR DialogProcCredits(HWND, UINT, WPARAM, LPARAM);
+INT_PTR RegisterProc (HWND, UINT, WPARAM, LPARAM);
+INT_PTR AbortDialogProc(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK AbortProc(HDC hdc, int nCode);
 HWND GetProgress();
 

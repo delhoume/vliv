@@ -663,7 +663,7 @@ LRESULT CALLBACK TopWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	    SwitchFullscreen(mainwindow, vlivview);
 	    break;
 	case ID_TOOLS_REGISTER:
-	  DialogBox(languageInst, "RegisterDlg", mainwindow, RegisterProc);
+	  DialogBox(languageInst, "RegisterDlg", mainwindow, (DLGPROC)RegisterProc);
 	  UpdateToolbarAndMenus();
 	  break;
 	case ID_TOOLS_EXPORTBMP: {
@@ -760,10 +760,10 @@ LRESULT CALLBACK TopWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	    UpdateScrollbars(TRUE);
 	    break;
 	case ID_HELP_ABOUT:
-	    DialogBox(languageInst, "AboutDlg", mainwindow, DialogProcAbout);
+	    DialogBox(languageInst, "AboutDlg", mainwindow, (DLGPROC)DialogProcAbout);
 	    break;
 	case ID_HELP_CREDITS:
-	    DialogBox(hInst, "CreditsDlg", mainwindow, DialogProcCredits);
+	    DialogBox(hInst, "CreditsDlg", mainwindow, (DLGPROC)DialogProcCredits);
 	    break;
 	}
 	if ((LOWORD(wParam) >= ID_FILE_RECENT) && (LOWORD(wParam) < (ID_FILE_RECENT + GetNumRecent()))) 
@@ -826,7 +826,7 @@ LRESULT CALLBACK TopWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
       case TTN_NEEDTEXT: {
 	  TCHAR buffer[100];
 	  LPTOOLTIPTEXT lpToolTipText = (LPTOOLTIPTEXT)lParam;
-	  LoadString(languageInst, lpToolTipText->hdr.idFrom, buffer, 30);
+	  LoadString(languageInst, (UINT)(lpToolTipText->hdr.idFrom), buffer, 30);
 	  lpToolTipText->lpszText = buffer;
 	break;
       }
@@ -1190,9 +1190,8 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	    UpdateScrollbars(TRUE);
 	break;
 	case MM_JOY1MOVE: {
-		int x = 0, y = 0;
-		x = LOWORD(lParam) >> 12;
-		y = HIWORD(lParam) >> 12;
+		int x = LOWORD(lParam) >> 12;
+		int y = HIWORD(lParam) >> 12;
 		// add some factor here ?
 		ScrollWithOffset(hwnd, x, y);
 		return 0;
@@ -1373,7 +1372,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	DispatchMessage(&msg);
       }
     }
-    return msg.wParam;
+    return (int)msg.wParam;
 }
 
 void UpdateToolbarAndMenus() {

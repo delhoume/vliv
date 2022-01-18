@@ -97,7 +97,7 @@ BYTE ANDMask[128] = {
 //	Subclass window procedure for a static control
 //
 LRESULT CALLBACK URLCtrlProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam) {
-    URLCtrl		*url = (URLCtrl *)GetWindowLong(hwnd, GWL_USERDATA);
+    URLCtrl		*url = (URLCtrl *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
     WNDPROC		oldproc = url->oldproc;
     HDC			hdc;
     HANDLE		hOld;
@@ -105,13 +105,13 @@ LRESULT CALLBACK URLCtrlProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
     RECT		rect;
     DWORD		dwStyle;
     DWORD		dwDTStyle = 0;
-    UINT		ret;
+    LRESULT		ret;
     static BOOL  fClicking;
     static TCHAR szWinText[_MAX_PATH];
     switch(iMsg) {
 	// Free up the structure we allocated
     case WM_NCDESTROY:
-	HeapFree(GetProcessHeap(), 0, url);
+		HeapFree(GetProcessHeap(), 0, url);
 	break;
 	// Paint the static control using our custom
 	// colours, and with an underline text style
@@ -194,18 +194,18 @@ BOOL StaticToURLControl(HWND hDlg, UINT staticid, TCHAR *szURL, COLORREF crLink)
     SetWindowLong(hwndCtrl, GWL_STYLE, GetWindowLong(hwndCtrl, GWL_STYLE) | SS_NOTIFY);
     // set the URL text (not the display text)
     if(szURL)
-	lstrcpy(url->szURL, szURL);
+		lstrcpy(url->szURL, szURL);
     else
-	url->szURL[0] = _T('\0');
+		url->szURL[0] = _T('\0');
     // set the hyperlink colour
     if(crLink != -1) url->crLink = crLink;
     else             url->crLink = RGB(0,0,255);
     // set the visited colour
     url->crVisited = RGB(128,0,128);
     // subclass the static control
-    url->oldproc = (WNDPROC)SetWindowLong(hwndCtrl, GWL_WNDPROC, (LONG)URLCtrlProc);
+    url->oldproc = (WNDPROC)SetWindowLongPtr(hwndCtrl, GWLP_WNDPROC, (LONG_PTR)URLCtrlProc);
     // associate the URL structure with the static control
-    SetWindowLong(hwndCtrl, GWL_USERDATA, (LONG)url);
+    SetWindowLongPtr(hwndCtrl, GWLP_USERDATA, (LONG_PTR)url);
     return TRUE;
 }
 
