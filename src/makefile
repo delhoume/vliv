@@ -24,8 +24,6 @@ OBJECTS = vliv.obj urlctrl.obj dialogs.obj handlers.obj bitmap.obj recent.obj wi
 
 all: vliv.exe
 
-
-
 vliv.obj : vliv.c vliv.h
 	$(CC) $(CFLAGS) /c vliv.c
 
@@ -59,12 +57,11 @@ vliv.res : resources\vliv.rc
 vliv.exe : $(OBJECTS) vliv.res
 	$(LD) /OUT:vliv.exe $(LDFLAGS) $(OBJECTS) vliv.res $(SYSLIBS)
 
-# not working yet, do not use
-languages: french.dll
+languages: fra.dll
 
-french.dll: resources/french.rc
-	$(RC) /fo french.res resources/french.rc
-	$(LD) /dll /machine:x86 /noentry /out:french.dll french.res
+fra.dll: resources/fra.rc
+	$(RC) /fo fra.res resources/fra.rc
+	$(LD) /dll /machine:x86 /noentry /out:fra.dll fra.res
 
 clean:
 	del /q *.pdb *.ilk *.obj vliv.exe *~ *.res
