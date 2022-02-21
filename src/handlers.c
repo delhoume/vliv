@@ -93,17 +93,24 @@ void RegisterPlugins(ImagePtr img) {
     } 
 }
 
+int SortHandler(const void* a, const void* b) {
+	FormatHandlerPtr h1 = *(FormatHandlerPtr*)a;
+	FormatHandlerPtr h2 = *(FormatHandlerPtr*)b;
+	return strcmp(h1->getdescription(), h2->getdescription());
+}
+
 void RegisterFormatHandlers(ImagePtr img) {
     unsigned int idx;
     unsigned int len;
     char tempfilter[1024];
-    //    RegisterPluginHandler(img, "vliv.dll");
-    //    RegisterPluginHandler(img, "newhandler.dll");
     RegisterPlugins(img);
     // build the filter
     strcpy(customfilter, "All Files|*.*|");
     strcat(customfilter, "Recognized image types|");
     strcpy(tempfilter, "|");
+	// sort the handlers's descriptions
+	qsort(formats, numformats, sizeof(FormatHandlerPtr*), SortHandler);
+	
     for (idx = 0; idx < numformats; ++idx) {
 	FormatHandlerPtr handler = formats[idx];
 	if (idx != 0) {
