@@ -867,6 +867,8 @@ typedef WINUSERAPI BOOL (WINAPI * SetLayeredWindowAttributesF)(HWND, COLORREF,	B
 #endif /* LWA_ALPHA */
 void ScrollWithOffset(HWND hwnd, int dx, int dy);
 
+#define JOYSPEED 5
+
 LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     static BOOL started;
     static int mousex;
@@ -1182,18 +1184,23 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 		}
 		return 0;
 	break;
-	case MM_JOY1BUTTONDOWN:
+	case MM_JOY1BUTTONDOWN: 
 		if (wParam & JOY_BUTTON1)
-			SetDirectory(image.currentdir - 1);
+			HandleMouseWheel(1);
 		if (wParam & JOY_BUTTON2)
-			SetDirectory(image.currentdir + 1);
-	    UpdateScrollbars(TRUE);
+			HandleMouseWheel(-1);		
+		return 0;
 	break;
 	case MM_JOY1MOVE: {
+		int mx = 0;
+		int my = 0;
 		int x = LOWORD(lParam) >> 12;
 		int y = HIWORD(lParam) >> 12;
-		// add some factor here ?
-		ScrollWithOffset(hwnd, x, y);
+		if (x == 0) mx = JOYSPEED;
+		else if (x == 15) mx = -JOYSPEED;
+		if (y == 0) my = JOYSPEED;
+		else if (y == 15) my = -JOYSPEED;
+		ScrollWithOffset(hwnd, mx, my);
 		return 0;
 	}
 	break;
