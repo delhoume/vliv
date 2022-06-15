@@ -19,7 +19,7 @@ INT_PTR DialogProcAbout (HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) 
      case WM_INITDIALOG :
 	 ShowWindow (hDlg, SW_HIDE);
 	if (GetDlgItem(hDlg, IDC_HYPERLINK)) 
-	    StaticToURLControl(hDlg, IDC_HYPERLINK, "http://vlivviewer.free.fr/vliv.htm", -1);
+	    StaticToURLControl(hDlg, IDC_HYPERLINK, "https://github.com/delhoume/vliv", -1);
 	 if (isRegistered == TRUE && GetDlgItem(hDlg, 3)) {
 	     char buffer[100];
 	     LoadString(languageInst, IDS_REGISTERED_TO, sz, sizeof(sz));

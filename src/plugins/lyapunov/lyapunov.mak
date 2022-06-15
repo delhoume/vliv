@@ -3,7 +3,7 @@ LD  = link
 
 VLIVDIR = ..\..
 
-DEBUG=/Ox 
+DEBUG = /Ox 
 
 CFLAGS = /nologo /W3 $(DEBUG) /D_CRT_SECURE_NO_DEPRECATE /DWIN32 /DWINDOWS /I. /I$(VLIVDIR)
 
