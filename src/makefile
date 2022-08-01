@@ -8,10 +8,10 @@ LD  = link
 DEBUG=/Ox 
 
 VERSION=2.5
-VERSIONSHORT=257
+VERSIONSHORT=258
 
 CFLAGS = /nologo /W3 $(DEBUG) /D_CRT_SECURE_NO_DEPRECATE /DWIN32 /DWINDOWS /I. 
-LDFLAGS = $(LDDEBUG) /SUBSYSTEM:WINDOWS /nodefaultlib:libc /VERSION:$(VERSION)
+LDFLAGS = $(LDDEBUG) /SUBSYSTEM:WINDOWS /nodefaultlib:libc /VERSION:$(VERSION) /LARGEADDRESSAWARE
 
 SYSLIBS = wininet.lib user32.lib gdi32.lib kernel32.lib comctl32.lib comdlg32.lib shlwapi.lib \
 	  shell32.lib advapi32.lib version.lib strsafe.lib msimg32.lib winmm.lib
