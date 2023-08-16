@@ -928,13 +928,14 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	unsigned int x, y;
 	int startx, starty;
 	unsigned int miny, maxy;
+	unsigned int minx, maxx;
 	unsigned int currenty;
       
 	si.fMask  = SIF_ALL;
 	hDC = BeginPaint(hwnd, &ps);
 	GetClientRect(hwnd, &rect);
 	if (image.handler == 0) {
-	    FillRect(hDC, &rect, (HBRUSH)GetStockObject(WHITE_BRUSH));
+	    FillRect(hDC, &rect, (HBRUSH)GetStockObject(GRAY_BRUSH));
 	    EndPaint(hwnd, &ps);
 	    return 0;
 	}
@@ -954,12 +955,18 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	if (image.theight != 0) {
 		miny = invalidrect.top / image.theight;
 		maxy = invalidrect.bottom / image.theight + 1;
+		minx = invalidrect.left / image.twidth;
+		maxx = invalidrect.right / image.twidth + 1;
 	} else {
 		miny = invalidrect.top; 
 		maxy = image.numtilesy;
+		minx = invalidrect.left;
+		maxx = image.numtilesx;
 	}
 	if (maxy >= image.numtilesy)
 	    maxy = image.numtilesy;
+		if (maxx >= image.numtilesx)
+		maxx = image.numtilesx;
 
 	// image is fully visible, but size not multiple of tiles
 	if ((invalidrect.left == 0) && (invalidrect.right > (int)image.width))
@@ -974,7 +981,8 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	    unsigned int currentx = 0;
 	    currenty = y * image.theight;
 	    CreateRow(y);
-	    for (x = 0; x < image.numtilesx; ++x) {
+	   // for (x = 0; x < image.numtilesx; ++x) {	   
+		for (x = minx; x < maxx; ++x) {
 		RECT tilerect;
 		RECT inter;
 		currentx = x * image.twidth;
@@ -1094,6 +1102,7 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	ImageList_Destroy(imagelist);
 	ImageList_Destroy(imagelistd);
 	ImageList_Destroy(imagelisth);
+	joyReleaseCapture(JOYSTICKID1);
 	return 0;
     case WM_ERASEBKGND:
 	return 0;

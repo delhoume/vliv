@@ -21,8 +21,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP
 FONT 8, "MS Shell Dlg"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,68,75,50,14
-    CTEXT           "Vliv 2.6.0",IDC_VERSION,6,14,180,8
-    CTEXT           "(c) 2003-2022, Frederic Delhoume",4,6,45,180,8
+    CTEXT           "Vliv 2.7.0",IDC_VERSION,6,14,180,8
+    CTEXT           "(c) 2003-2023, Frederic Delhoume",4,6,45,180,8
     CTEXT           "https://github.com/delhoume/vliv",IDC_HYPERLINK,6,58,180,8
 END
 
