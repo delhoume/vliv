@@ -276,9 +276,14 @@ static void UpdateStatusBar() {
     if (image.handler) {
 	TCHAR buffer[MAX_PATH];
 	unsigned __int64 gigapixels = UInt32x32To64(image.width, image.height);
-	double gp = gigapixels / (double)1000000000;
 	if (gigapixels >= 1000000000) {
+		double gp = gigapixels / (double)1000000000;
+		if (gp >= 1000) {
+			gp = gp / (double)1000.0;
+			LoadString(languageInst, IDS_IMAGE_WIDTH_TERA, sz, sizeof(sz));
+		} else {
 		LoadString(languageInst, IDS_IMAGE_WIDTH_GIGA, sz, sizeof(sz));
+		}
 		StringCchPrintf(buffer, MAX_PATH, sz, image.width, image.height, gp);
 	} else {
 		LoadString(languageInst, IDS_IMAGE_WIDTH, sz, sizeof(sz));

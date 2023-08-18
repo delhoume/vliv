@@ -79,6 +79,7 @@ BEGIN
     ID_TOOLS_EXPORTBMP "Export View to BMP File..."
 	IDS_IMAGE_WIDTH "%dx%d pixels"
 	IDS_IMAGE_WIDTH_GIGA "%dx%d pixels (%.1f gigapixels)"
+	IDS_IMAGE_WIDTH_TERA "%dx%d pixels (%.1f terapixels)"
 END
 
 VLIVACCEL ACCELERATORS 
