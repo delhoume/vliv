@@ -139,7 +139,24 @@ static BOOL InitJoystick(HWND hWnd) {
 static DWORD procnum = 1;
 typedef WINUSERAPI BOOL (WINAPI * QUEUEUSERWORKITEMF)(LPTHREAD_START_ROUTINE, LPVOID, ULONG);
 QUEUEUSERWORKITEMF QueueUserWorkItemF = 0;
-static const TCHAR* VlivRegKeyCPU = "Software\\Delhoume\\Vliv";
+
+const TCHAR* VlivRegKey = "Software\\Delhoume\\Vliv";
+
+DWORD _debug = 0;
+
+static void InitSettings() {
+   DWORD dwDisp;
+   HKEY hKey;
+   RegCreateKeyEx(HKEY_CURRENT_USER, VlivRegKey, 0, NULL, 0, KEY_ALL_ACCESS, NULL, &hKey, &dwDisp);
+    if (hKey) {
+	DWORD dwValue;
+	DWORD cbData = sizeof(DWORD);
+	DWORD dwType = REG_DWORD;
+	if (RegQueryValueEx(hKey, "Debug", NULL, &dwType, (LPBYTE)&dwValue, &cbData) == ERROR_SUCCESS) 
+	    _debug = dwValue;
+	RegCloseKey(hKey);
+    }
+}
 
 static void CheckProcNumber() {
     SYSTEM_INFO sinfo;
@@ -148,7 +165,7 @@ static void CheckProcNumber() {
     HMODULE hmod = GetModuleHandle("kernel32.dll");
     GetSystemInfo(&sinfo);
     procnum = sinfo.dwNumberOfProcessors;
-    RegCreateKeyEx(HKEY_CURRENT_USER, VlivRegKeyCPU, 0, NULL, 0, KEY_ALL_ACCESS, NULL, &hKey, &dwDisp);
+    RegCreateKeyEx(HKEY_CURRENT_USER, VlivRegKey, 0, NULL, 0, KEY_ALL_ACCESS, NULL, &hKey, &dwDisp);
     if (hKey) {
 	DWORD dwValue;
 	DWORD cbData = sizeof(DWORD);
@@ -1018,7 +1035,7 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 		Tile* tile = GetTileAtPos(tinfo->x, tinfo->y);
 		SelectObject(hdcbitmap, tile->bitmap);
 		BitBlt(hDC, 
-		       tinfo->sx,
+  		       tinfo->sx,
 		       tinfo->sy,
 		       tinfo->sw,
 		       tinfo->sh,
@@ -1029,7 +1046,7 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 	    } else {
 		// fill with black
 		RECT tilerect;
-		SetRect(&tilerect, tinfo->dx, tinfo->dy,  tinfo->sh, tinfo->sw);
+		SetRect(&tilerect, tinfo->dx, tinfo->dy,  tinfo->sw, tinfo->sh);
 		FillRect(hDC, &tilerect, (HBRUSH)GetStockObject(BLACK_BRUSH));
 	    }
 	}
@@ -1330,6 +1347,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     InitImage();
     RegisterFormatHandlers(&image);
     CheckProcNumber();
+    InitSettings();
     oldcursor = LoadCursor(hInst, "HAND1");
     warningicon = (HICON)LoadImage(hInst, "MYINFO", IMAGE_ICON, 0, 0, 0);
     idleicon = (HICON)LoadImage(hInst, "IDLE", IMAGE_ICON, 0, 0, 0);
