@@ -45,12 +45,12 @@ public:
 	LRESULT WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam );
 private:
 	void OnTimer();
-	HCURSOR GetNewCursorAndDistance( CPoint pt );
+	HCURSOR GetNewCursorAndDistance( POINT pt );
 
 	//
 	//	The bitmap we use for the origin, plus the bitmap description structure
 	HBITMAP m_bitmap;
-	CSize m_sizeBitmap;
+	SIZE m_sizeBitmap;
 
 	//
 	//	The directions we can scroll in
@@ -59,14 +59,14 @@ private:
 	//
 	//	The origin point, used to calculate the current mouse distance, this is then used
 	//	to pass on to determine how fast we scroll and in what directions
-	const CPoint m_ptOrigin;
-	CSize m_sizeDistance;
-	CRect m_rcCursorMargin;
+	const POINT m_ptOrigin;
+	SIZE m_sizeDistance;
+	RECT m_rcCursorMargin;
 
 	//
 	//	An optimisation to allow us to not calculate the cursor and the distance if the
 	//	mouse has not been moved.
-	CPoint m_ptCursorPrevious;
+	POINT m_ptCursorPrevious;
 
 	const CursorArray m_parrnIDs;
 

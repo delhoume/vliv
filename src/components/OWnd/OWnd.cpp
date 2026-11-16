@@ -31,14 +31,14 @@ BOOL APIENTRY DllMain( HINSTANCE hModule, DWORD ul_reason_for_call, LPVOID )
 	{
 	case DLL_PROCESS_ATTACH:
 		g_hInst = hModule;
-		TRACE( _T("OWnd DLL_PROCESS_ATTACH\n") );
+		OutputDebugString( _T("OWnd DLL_PROCESS_ATTACH\n") );
 		break;
 
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 		break;
 	case DLL_PROCESS_DETACH:
-		TRACE( _T("OWnd DLL_PROCESS_DETACH\n") );
+		OutputDebugString( _T("OWnd DLL_PROCESS_DETACH\n") );
 		break;
 	}
 	return TRUE;

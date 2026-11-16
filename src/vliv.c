@@ -18,7 +18,6 @@
 #include <rawinput.h>
 #include <recent.h>
 #include <tilemgr.h>
-#include <rawinput.h>
 #include <window.h>
 
 #if !defined(WM_MOUSEWHEEL)
@@ -951,7 +950,9 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam,
     return 0;
     break;
   case WM_MBUTTONDOWN: {
-    owndInst = LoadLibrary("ownd.dll");
+    if (owndInst == NULL) {
+      owndInst = LoadLibrary("ownd.dll");
+    }
     if (owndInst) {
       StartPanProc pStartPanning =
           (StartPanProc)GetProcAddress(owndInst, "StartPanning");
@@ -971,9 +972,13 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam,
                             GetWindowLong(wpan, GWL_EXSTYLE) | 0x00080000);
               pSetLayeredAttributes(wpan, 0, (BYTE)128, LWA_ALPHA);
             }
+          } else {
           }
+        } else {
         }
+      } else {
       }
+    } else {
     }
     return 0;
   }
@@ -1311,7 +1316,6 @@ LRESULT CALLBACK VlivWndProc(HWND hwnd, UINT msg, WPARAM wParam,
     break;
   default:
     if (msg == uOriginWindowEndMessage) {
-      FreeLibrary(owndInst);
       SetCursor(cursor);
     } else if (msg == uOriginWindowUpdateMessage) {
       if (image.handler) {

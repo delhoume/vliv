@@ -25,6 +25,7 @@ Purpose:	Implementation of the origin window.
 #include <ownd.h>
 #include "OriginWnd.h"
 #include "resource.h"
+#include <assert.h>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -34,6 +35,12 @@ enum {
 			, knTimerDuration = 25
 			, knDistanceToScrollDivisor = 16
 		};
+
+static void AssertWin32Result( BOOL result )
+{
+	(void)result;
+	assert( result );
+}
 
 static const UINT uOriginWindowUpdateMessage = ::RegisterWindowMessage( OWND_WINDOW_UPDATE );
 static const UINT uOriginWindowEndMessage = ::RegisterWindowMessage( OWND_WINDOW_END );
@@ -68,7 +75,7 @@ static const UINT g_arrCursorsHorz[3][3] =
 												};
 
 
-static CursorArray FASTCALL GetCursorArray( BOOL bHorz, BOOL bVert )
+static CursorArray GetCursorArray( BOOL bHorz, BOOL bVert )
 //
 //	Return a pointer to the array above to use for the mouse cursor
 {
@@ -85,31 +92,36 @@ static CursorArray FASTCALL GetCursorArray( BOOL bHorz, BOOL bVert )
 
 
 COriginWnd::COriginWnd( BOOL bCanScrollHorizontal, BOOL bCanScrollVertical, POINT pt )
-	: m_sizeBitmap( 0, 0 )
-	, m_bScrollVert( bCanScrollVertical ? 1 : 0 )		//	Our boolean values are used in the lookup table below so the must be either one or zero
+	: m_bScrollVert( bCanScrollVertical ? 1 : 0 )		//	Our boolean values are used in the lookup table below so the must be either one or zero
 	, m_bScrollHorz( bCanScrollHorizontal ? 1 : 0 )
 	, m_ptOrigin( pt )
-	, m_sizeDistance( 0, 0 )
-	, m_ptCursorPrevious( 0, 0 )
 	, m_parrnIDs( GetCursorArray( m_bScrollHorz, m_bScrollVert ) )
 	, m_bScrolledAlready( FALSE )
 	, m_hwnd( NULL )
 	, m_hwndParent( NULL )
 	, m_hcurOld( NULL )
 {
+	m_sizeBitmap.cx = 0;
+	m_sizeBitmap.cy = 0;
+	m_sizeDistance.cx = 0;
+	m_sizeDistance.cy = 0;
+	m_ptCursorPrevious.x = 0;
+	m_ptCursorPrevious.y = 0;
+	SetRectEmpty( &m_rcCursorMargin );
 
 	//	It's pointless displaying the origin window when you are not going to do any scrolling
-	ASSERT( m_bScrollVert || m_bScrollHorz );
+	assert( m_bScrollVert || m_bScrollHorz );
 
 	//
 	//	Determine which of the origin bitmaps to display using a simple table. We want pretty
 	//	much the same behaviour as IE.
 	static const UINT arrOrigin[2][2] = { 0, IDB_ORIGIN_VERTICAL, IDB_ORIGIN_HORIZONTAL, IDB_ORIGIN_ALL };
-	ASSERT( arrOrigin[ m_bScrollHorz ][ m_bScrollVert ] != 0 );	//	Oops, how did this happen?
+	assert( arrOrigin[ m_bScrollHorz ][ m_bScrollVert ] != 0 );	//	Oops, how did this happen?
 	m_bitmap = ::LoadBitmap( g_hInst, MAKEINTRESOURCE( arrOrigin[ m_bScrollHorz ][ m_bScrollVert ] ) );
 
 	BITMAP bmp;
-	VAPI( GetObject( m_bitmap, sizeof( bmp ), &bmp ) );
+	ZeroMemory( &bmp, sizeof( bmp ) );
+	AssertWin32Result( GetObject( m_bitmap, sizeof( bmp ), &bmp ) != 0 );
 	m_sizeBitmap.cx = bmp.bmWidth;
 	m_sizeBitmap.cy = bmp.bmHeight;
 
@@ -155,12 +167,12 @@ LRESULT CALLBACK OWndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 	switch( message )
 	{
 	case WM_NCCREATE:
-		SetWindowLong( hwnd, 0, reinterpret_cast<long>( reinterpret_cast<LPCREATESTRUCT>( lParam )->lpCreateParams ) );
+		SetWindowLongPtr( hwnd, 0, reinterpret_cast<LONG_PTR>( reinterpret_cast<LPCREATESTRUCT>( lParam )->lpCreateParams ) );
 		return 1;
 
 	default:
 		{
-			COriginWnd *pOWnd = reinterpret_cast<COriginWnd *>( GetWindowLong( hwnd, 0 ) );
+			COriginWnd *pOWnd = reinterpret_cast<COriginWnd *>( GetWindowLongPtr( hwnd, 0 ) );
 			if( pOWnd )
 			{
 				return pOWnd->WndProc( hwnd, message, wParam, lParam );
@@ -177,7 +189,7 @@ static LPCTSTR RegisterOwndClass()
 	if( g_Class == NULL )
 	{
 		WNDCLASSEX wcex;
-		ZeroStructure( wcex );
+		ZeroMemory( &wcex, sizeof( wcex ) );
 
 		wcex.cbSize = sizeof( WNDCLASSEX );
 
@@ -200,7 +212,7 @@ HWND COriginWnd::Create( HWND hwndParent )
 	//	Save the cursor, suggestion from Jonathan Caryl.
   m_hcurOld = GetCursor();
 
-	CPoint pt = m_ptOrigin;
+	POINT pt = m_ptOrigin;
 	::ClientToScreen( hwndParent, &pt );
 
 
@@ -213,25 +225,25 @@ HWND COriginWnd::Create( HWND hwndParent )
 	m_hwnd = CreateWindowEx( WS_EX_TOOLWINDOW, RegisterOwndClass(), NULL, WS_CLIPSIBLINGS | WS_POPUP, pt.x - nHalfWidth, pt.y - nHalfHeight, m_sizeBitmap.cx, m_sizeBitmap.cy, m_hwndParent, 0, g_hInst, this );
 	if( m_hwnd )
 	{
-		VAPI( ::SetWindowPos( m_hwnd, HWND_TOPMOST,0 ,0 ,0 ,0, SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE ) );
+		AssertWin32Result( ::SetWindowPos( m_hwnd, HWND_TOPMOST,0 ,0 ,0 ,0, SWP_SHOWWINDOW | SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE ) );
 
 		//
 		//	Determine the thresholds for the cursor changing, while the cursor is between these points the cursor does not
 		//	change to one of the diagonal cursors. I think this is how IE does it - sure looks like it.
-		m_rcCursorMargin.Set( m_ptOrigin.x - nHalfWidth, m_ptOrigin.y - nHalfHeight, m_ptOrigin.x + nHalfWidth, m_ptOrigin.y + nHalfHeight );
+		SetRect( &m_rcCursorMargin, m_ptOrigin.x - nHalfWidth, m_ptOrigin.y - nHalfHeight, m_ptOrigin.x + nHalfWidth, m_ptOrigin.y + nHalfHeight );
 
 		//
 		//	We want a circular(or as much as the bitmap allows) window, so do the usual
 		//	thing of creating a region and assigning it to the window.
 		//	OBOs(+1s) for region spotted and fixed by Simon Clark.
 		HRGN rgn = CreateEllipticRgn( 0, 0, m_sizeBitmap.cx + 1, m_sizeBitmap.cy + 1);
-		VAPI( SetWindowRgn( m_hwnd, rgn, TRUE ) );
+		AssertWin32Result( SetWindowRgn( m_hwnd, rgn, TRUE ) );
 
 		//
 		//	Set our mouse capture so that all mouse messages go to us and also set a timer
 		//	so that we can periodically send our message to our parent.
 		SetCapture( m_hwnd );
-		VAPI( SetTimer( m_hwnd, knTimerID, knTimerDuration, NULL ) == knTimerID );
+		AssertWin32Result( SetTimer( m_hwnd, knTimerID, knTimerDuration, NULL ) == knTimerID );
 		g_pOriginWnd = this;
 		g_hdlHook = SetWindowsHookEx( WH_GETMESSAGE, HookProc, NULL, GetCurrentThreadId() );
 	}
@@ -251,7 +263,7 @@ LRESULT COriginWnd::WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 			
 			HDC hdcMem =  CreateCompatibleDC( ps.hdc );
 			HGDIOBJ hOld = SelectObject( hdcMem, m_bitmap );
-			VAPI( BitBlt( ps.hdc, 0, 0, m_sizeBitmap.cx, m_sizeBitmap.cy, hdcMem, 0, 0, SRCCOPY ) );
+			AssertWin32Result( BitBlt( ps.hdc, 0, 0, m_sizeBitmap.cx, m_sizeBitmap.cy, hdcMem, 0, 0, SRCCOPY ) );
 			(void)SelectObject( hdcMem, hOld );
 			DeleteDC( hdcMem );
 			EndPaint( hwnd, &ps );
@@ -265,7 +277,7 @@ LRESULT COriginWnd::WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 		break;
 
 	case WM_DESTROY:
-		VERIFY( UnhookWindowsHookEx( g_hdlHook ) );
+		AssertWin32Result( UnhookWindowsHookEx( g_hdlHook ) );
 		g_hdlHook = NULL;
 		break;
 		
@@ -297,14 +309,14 @@ LRESULT COriginWnd::WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
 
 
-HCURSOR COriginWnd::GetNewCursorAndDistance( CPoint pt )
+HCURSOR COriginWnd::GetNewCursorAndDistance( POINT pt )
 //
 //	Figures out the new cursor to display and the distance the cursor is from our
 //	origin point.
 //
 //	Returns a new cursor or NULL if the cursor and therefore the distance has not changed
 {
-	if( m_ptCursorPrevious != pt )
+	if( m_ptCursorPrevious.x != pt.x || m_ptCursorPrevious.y != pt.y )
 	{
 		m_ptCursorPrevious = pt;
 
@@ -337,8 +349,8 @@ HCURSOR COriginWnd::GetNewCursorAndDistance( CPoint pt )
 
 void COriginWnd::OnTimer()
 {
-	CPoint ptCursor;
-	VERIFY( GetCursorPos( &ptCursor ) );
+	POINT ptCursor;
+	AssertWin32Result( GetCursorPos( &ptCursor ) );
 
 	ScreenToClient( m_hwndParent, &ptCursor );
 	HCURSOR hc = GetNewCursorAndDistance( ptCursor );
@@ -349,13 +361,17 @@ void COriginWnd::OnTimer()
 
 	//
 	//	If the parent did not respond then we will handle the scrolling.
-	CSize sizeLocalDistance( m_sizeDistance.cx / knDistanceToScrollDivisor, m_sizeDistance.cy / knDistanceToScrollDivisor );
+	SIZE sizeLocalDistance = {
+		m_sizeDistance.cx / knDistanceToScrollDivisor,
+		m_sizeDistance.cy / knDistanceToScrollDivisor
+	};
 	if( !SendMessage( m_hwndParent, uOriginWindowUpdateMessage, 0, reinterpret_cast<LPARAM>( &sizeLocalDistance ) ) )
 	{
 		int nMin, nMaxHorz, nMaxVert;
 		GetScrollRange( m_hwnd, SB_HORZ, &nMin, &nMaxHorz);
 		GetScrollRange( m_hwnd, SB_VERT, &nMin, &nMaxVert);
-		CScrollInfo infoHorz( SIF_PAGE | SIF_POS ), infoVert( SIF_PAGE | SIF_POS );
+		SCROLLINFO infoHorz = { sizeof( SCROLLINFO ), SIF_PAGE | SIF_POS };
+		SCROLLINFO infoVert = { sizeof( SCROLLINFO ), SIF_PAGE | SIF_POS };
 		if( GetScrollInfo( m_hwnd, SB_HORZ, &infoHorz) )
 		{
 			nMaxHorz -= max(infoHorz.nPage-1,0);
@@ -366,7 +382,7 @@ void COriginWnd::OnTimer()
 			nMaxVert -= max(infoVert.nPage-1,0);
 		}
 
-		const CSize sizeScrollLimit( nMaxHorz, nMaxVert );
+		const SIZE sizeScrollLimit = { nMaxHorz, nMaxVert };
 
 		const int nHorzScrollPos = infoHorz.nPos;
 		const int nVertScrollPos = infoVert.nPos;
@@ -374,7 +390,7 @@ void COriginWnd::OnTimer()
 		const int nNewHorzScrollPos = max( 0, min( sizeScrollLimit.cx, nHorzScrollPos + sizeLocalDistance.cx ) );
 		const int nNewVertScrollPos = max( 0, min( sizeScrollLimit.cy, nVertScrollPos + sizeLocalDistance.cy ) );
 
-		CSize sizeDiff( nNewHorzScrollPos - nHorzScrollPos , nNewVertScrollPos - nVertScrollPos  );
+		SIZE sizeDiff = { nNewHorzScrollPos - nHorzScrollPos, nNewVertScrollPos - nVertScrollPos };
 		
 		if( sizeDiff.cx || sizeDiff.cy )
 		{
@@ -386,8 +402,8 @@ void COriginWnd::OnTimer()
 			if( nNewHorzScrollPos != infoHorz.nPos )
 				(void)SetScrollPos( m_hwndParent, SB_HORZ, nNewHorzScrollPos, FALSE );
 
-			VAPI( ScrollWindow( m_hwndParent, -sizeDiff.cx, -sizeDiff.cy, NULL, NULL ) );
-			VAPI( UpdateWindow( m_hwndParent ) );
+			AssertWin32Result( ScrollWindow( m_hwndParent, -sizeDiff.cx, -sizeDiff.cy, NULL, NULL ) );
+			AssertWin32Result( UpdateWindow( m_hwndParent ) );
 		}
 	}
 }
@@ -395,6 +411,6 @@ void COriginWnd::OnTimer()
 
 void COriginWnd::DestroyWindow()
 {
-	VAPI( ::DestroyWindow( m_hwnd ) );
+	AssertWin32Result( ::DestroyWindow( m_hwnd ) );
 	(void)PostMessage( m_hwndParent, uOriginWindowEndMessage, 0, 0 );
 }
